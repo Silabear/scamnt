@@ -57,6 +57,8 @@ async def on_message(msg: discord.Message):
     if not different_channels: # skip if they're in the same channel
         return
     
+    print(f"user {msg.author.global_name} triggered scam detector in server {msg.guild.name}")
+    
     try:
         await msg.author.send(view=SpamMessageView(msg)) # send user notice
     except Exception as err: 
@@ -86,5 +88,14 @@ async def on_message(msg: discord.Message):
     #     )
     # except:
     #     pass
+
+# logging purposes
+@bot.event
+async def on_guild_join(guild: discord.Guild):
+    print(f"i was added to '{guild.name}'")
+
+@bot.event
+async def on_guild_removed(guild: discord.Guild):
+    print(f"i was removed from guild '{guild.name}'")
 
 bot.run(TOKEN)
