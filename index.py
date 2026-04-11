@@ -90,6 +90,7 @@ async def on_message(msg: discord.Message):
 # logging purposes
 @bot.event
 async def on_guild_join(guild: discord.Guild):
+    print(f"i was added to guild {guild.name}")
     try:
         logs = await guild.audit_logs(limit=1,action=discord.AuditLogAction.bot_add).flatten()
         log = logs[0]
@@ -99,10 +100,16 @@ async def on_guild_join(guild: discord.Guild):
             target = guild.owner
         except:
             target = None
+        else:
+            print(f"i couldn't tell who added me to the server, but identified that {target.name} owns the server")
+    else:
+        print(f"i identified that {target.name} added me to the server")
 
     if target:
         await target.send(view=SetupMessageView(guild))
-    print(f"i was added to guild {guild.name}, and i send a setup message to the user {target.name}")
+        print(f"i sent {target.name} a setup message")
+    else:
+        print(f"i couldn't figure out who owned this server, so i didn't send a setup message.")
 
 
 @bot.event
