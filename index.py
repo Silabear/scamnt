@@ -24,7 +24,7 @@ class SetupMessageView(discord.ui.DesignerView):
 
         container = discord.ui.Container()
 
-        container.add_text(f"thanks for adding me to the server `{guild.name}`. please make sure that my role is **high up the role list**, because Discord only lets me ban users who are lower than me in the role hierarchy.")
+        container.add_text(f"thanks for adding me to the server `{guild.name}`. please make sure that \n- my role is **high up the role list**, because Discord only lets me ban users who are lower than me in the role hierarchy\n- i have the ban members permission, otherwise i can't ban the scammers :P")
         container.add_text("-# i promise this is the only time that i will ever send you a message. once you've done this, i'll leave you alone :P")
 
         self.add_item(container)
