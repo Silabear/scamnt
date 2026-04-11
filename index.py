@@ -17,6 +17,17 @@ class SpamMessageView(discord.ui.DesignerView):
         container.add_text(f"the server in question: `{msg.guild.name}`")
 
         self.add_item(container)
+        
+class SetupMessageView(discord.ui.DesignerView):
+    def __init__(self, guild: discord.Guild):
+        super().__init__(timeout=None)
+
+        container = discord.ui.Container()
+
+        container.add_text(f"thanks for adding me to the server `{guild.name}`. please make sure that my role is **high up the role list**, because Discord only lets me ban users who are lower than me in the role hierarchy.")
+        container.add_text("-# i promise this is the only time that i will ever send you a message. once you've done this, i'll leave you alone :P")
+
+        self.add_item(container)
 
 # Setup bot
 bot = discord.Bot(
@@ -74,25 +85,25 @@ async def on_message(msg: discord.Message):
         await msg.author.unban(reason="Spam detection system")
     except Exception as err:
         print("error on ban: " + str(err.args))
-        await msg.reply("-# scamn't couldn't softban this user. please double check that i have permission to ban members!",allowed_mentions=discord.AllowedMentions(replied_user=False, roles=False,everyone=False))
-
-    # try:
-    #     await msg.guild.get_channel(variables.modlogs).send(embed=discord.Embed(
-    #         title="User Softbanned",
-    #         description=f"{msg.author.name} (UID {msg.author.id}) was softbanned.",
-    #         colour=discord.Colour.red(),
-    #     )
-    #     .set_author(name="Spam detection system")
-    #     .add_field(name="Reason",value="Flagged by spam detection system for sending 3 messages across 3 channels within 7 seconds.",inline=False)
-    #     .add_field(name="Message",value=f"```\n{content}\n\n({len(msg.attachments)} attachments)```",inline=False)
-    #     )
-    # except:
-    #     pass
+        await msg.reply("-# i detected this was a scam message, but i can't ban this user! make sure i have ban members permission and that my role is placed high up the role list.",allowed_mentions=discord.AllowedMentions(replied_user=False, roles=False,everyone=False))
 
 # logging purposes
 @bot.event
 async def on_guild_join(guild: discord.Guild):
-    print(f"i was added to '{guild.name}'")
+    try:
+        logs = await guild.audit_logs(limit=1,action=discord.AuditLogAction.bot_add).flatten()
+        log = logs[0]
+        target = log.user
+    except:
+        try:
+            target = guild.owner
+        except:
+            target = None
+
+    if target:
+        await target.send(view=SetupMessageView(guild))
+    print(f"i was added to guild {guild.name}, and i send a setup message to the user {target.name}")
+
 
 @bot.event
 async def on_guild_removed(guild: discord.Guild):
