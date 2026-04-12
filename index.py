@@ -83,9 +83,11 @@ async def on_message(msg: discord.Message):
     try:
         await msg.author.ban(delete_message_seconds=30,reason="scamn't detected that this user sent 3 messages in 3 channels in 5 seconds")
         await msg.author.unban(reason="Spam detection system")
+        print("successfully softbanned user " + msg.author.global_name)
+    except discord.Forbidden:
+        await msg.reply("-# i detected this was a scam message, but i don't have permission to ban this user!.",allowed_mentions=discord.AllowedMentions(replied_user=False, roles=False,everyone=False))
     except Exception as err:
         print("error on ban: " + str(err.args))
-        await msg.reply("-# i detected this was a scam message, but i can't ban this user! make sure i have ban members permission and that my role is placed high up the role list.",allowed_mentions=discord.AllowedMentions(replied_user=False, roles=False,everyone=False))
 
 # logging purposes
 @bot.event
