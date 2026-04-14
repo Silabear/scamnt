@@ -115,7 +115,12 @@ async def on_guild_join(guild: discord.Guild):
 
 
 @bot.event
-async def on_guild_removed(guild: discord.Guild):
+async def on_guild_remove(guild: discord.Guild):
     print(f"i was removed from guild '{guild.name}'")
+
+@bot.event
+async def on_ready():
+    print(f"bot is ready! guild count: {len(bot.guilds)}")
+
 
 bot.run(TOKEN)
