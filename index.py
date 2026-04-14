@@ -67,6 +67,9 @@ async def on_message(msg: discord.Message):
 
     if not different_channels: # skip if they're in the same channel
         return
+
+    # remove users messages from cache
+    message_cache = list(filter(lambda m: m["user_id"] != user_id, message_cache))
     
     print(f"user {msg.author.global_name} triggered scam detector in server {msg.guild.name}")
     
@@ -75,9 +78,6 @@ async def on_message(msg: discord.Message):
     except Exception as err: 
         print("error on message send: " + str(err.args))
         pass
-
-    # remove users messages from cache
-    message_cache = list(filter(lambda m: m["user_id"] != user_id, message_cache))
 
     # softban to remove messages
     try:
